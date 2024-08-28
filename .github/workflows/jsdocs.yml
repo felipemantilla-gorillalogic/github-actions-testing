@@ -1,0 +1,22 @@
+on:
+  pull_request:
+    types: [labeled]
+
+jobs:
+  update-documentation:
+    name: Update Documentation
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+      
+      - name: Run Mo Documentation Updater
+        uses: felipemantilla-gorillalogic/mo-docs@main
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+          trigger-label: 'mo-docs'
