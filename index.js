@@ -8,6 +8,7 @@ const app = express();
 
 /**
  * Route handler for the root path.
+ * Sends a simple greeting message.
  * @param {import('express').Request} req - Express request object.
  * @param {import('express').Response} res - Express response object.
  */
@@ -17,6 +18,7 @@ app.get('/', (req, res) => {
 
 /**
  * Route handler for the about page.
+ * Provides information about the application.
  * @param {import('express').Request} req - Express request object.
  * @param {import('express').Response} res - Express response object.
  */
@@ -26,14 +28,18 @@ app.get('/about', (req, res) => {
 
 /**
  * Route handler for the login endpoint.
+ * Authenticates user credentials and provides login response.
  * @param {import('express').Request} req - Express request object.
  * @param {import('express').Response} res - Express response object.
  */
 app.post('/login', (req, res) => {
     res.send('Login successful!');
 });
+
 /**
  * Array of mock users.
+ * Each user object contains an id, username, and password.
+ * @type {Array<{id: number, username: string, password: string}>}
  */
 const users = [
     { id: 1, username: 'user1', password: 'password1' },
@@ -43,6 +49,7 @@ const users = [
 
 /**
  * Route handler for the login endpoint.
+ * Authenticates user credentials against the mock users array.
  * @param {import('express').Request} req - Express request object.
  * @param {import('express').Response} res - Express response object.
  */
@@ -61,6 +68,7 @@ app.post('/login', (req, res) => {
 
 /**
  * Route handler for the register endpoint.
+ * Registers a new user if the username is not already taken.
  * @param {import('express').Request} req - Express request object.
  * @param {import('express').Response} res - Express response object.
  */
@@ -88,6 +96,7 @@ app.post('/register', (req, res) => {
 
 /**
  * Route handler for updating a user.
+ * Updates the username and password of an existing user.
  * @param {import('express').Request} req - Express request object.
  * @param {import('express').Response} res - Express response object.
  */
@@ -111,6 +120,7 @@ app.put('/users/:id', (req, res) => {
 
 /**
  * Route handler for deleting a user.
+ * Removes a user from the users array based on the provided ID.
  * @param {import('express').Request} req - Express request object.
  * @param {import('express').Response} res - Express response object.
  */
