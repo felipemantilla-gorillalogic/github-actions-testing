@@ -1,38 +1,141 @@
+/**
+ * Express application instance.
+ * @type {import('express').Express}
+ */
 const express = require('express');
 
 const app = express();
 
-// GET request to the root endpoint
+/**
+ * Route handler for the root path.
+ * Sends a simple greeting message.
+ * @param {import('express').Request} req - Express request object.
+ * @param {import('express').Response} res - Express response object.
+ */
 app.get('/', (req, res) => {
     res.send('Hello, World!');
 });
 
-// GET request to the /about endpoint
+/**
+ * Route handler for the about page.
+ * Provides information about the application.
+ * @param {import('express').Request} req - Express request object.
+ * @param {import('express').Response} res - Express response object.
+ */
 app.get('/about', (req, res) => {
     res.send('This is the about page.');
 });
 
-// POST request to the /login endpoint
+/**
+ * Route handler for the login endpoint.
+ * Authenticates user credentials and provides login response.
+ * @param {import('express').Request} req - Express request object.
+ * @param {import('express').Response} res - Express response object.
+ */
 app.post('/login', (req, res) => {
-    // Handle login logic here
     res.send('Login successful!');
 });
 
-// PUT request to the /users/:id endpoint
+/**
+ * Array of mock users.
+ * Each user object contains an id, username, and password.
+ * @type {Array<{id: number, username: string, password: string}>}
+ */
+const users = [
+    { id: 1, username: 'user1', password: 'password1' },
+    { id: 2, username: 'user2', password: 'password2' },
+    { id: 3, username: 'user3', password: 'password3' }
+];
+
+/**
+ * Route handler for the login endpoint.
+ * Authenticates user credentials against the mock users array.
+ * @param {import('express').Request} req - Express request object.
+ * @param {import('express').Response} res - Express response object.
+ */
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+
+    // Find the user with the provided username and password
+    const user = users.find(u => u.username === username && u.password === password);
+
+    if (user) {
+        res.send('Login successful!');
+    } else {
+        res.status(401).send('Invalid username or password');
+    }
+});
+
+/**
+ * Route handler for the register endpoint.
+ * Registers a new user if the username is not already taken.
+ * @param {import('express').Request} req - Express request object.
+ * @param {import('express').Response} res - Express response object.
+ */
+app.post('/register', (req, res) => {
+    const { username, password } = req.body;
+
+    // Check if the username is already taken
+    const existingUser = users.find(u => u.username === username);
+
+    if (existingUser) {
+        res.status(409).send('Username already taken');
+    } else {
+        // Generate a unique ID for the new user
+        const id = users.length + 1;
+
+        // Create the new user object
+        const newUser = { id, username, password };
+
+        // Add the new user to the array of users
+        users.push(newUser);
+
+        res.send('Registration successful!');
+    }
+});
+
+/**
+ * Route handler for updating a user.
+ * Updates the username and password of an existing user.
+ * @param {import('express').Request} req - Express request object.
+ * @param {import('express').Response} res - Express response object.
+ */
 app.put('/users/:id', (req, res) => {
     const userId = req.params.id;
-    // Update user logic here
-    res.send(`User ${userId} updated successfully!`);
+    const { username, password } = req.body;
+
+    // Find the user with the provided ID
+    const user = users.find(u => u.id === parseInt(userId));
+
+    if (user) {
+        // Update the user's username and password
+        user.username = username;
+        user.password = password;
+
+        res.send(`User ${userId} updated successfully!`);
+    } else {
+        res.status(404).send('User not found');
+    }
 });
 
-// DELETE request to the /users/:id endpoint
+/**
+ * Route handler for deleting a user.
+ * Removes a user from the users array based on the provided ID.
+ * @param {import('express').Request} req - Express request object.
+ * @param {import('express').Response} res - Express response object.
+ */
 app.delete('/users/:id', (req, res) => {
     const userId = req.params.id;
-    // Delete user logic here
-    res.send(`User ${userId} deleted successfully!`);
-});
 
-// Start the server
-app.listen(3000, () => {
-    console.log('Server is running on port 3000');
+    // Find the index of the user with the provided ID
+    const userIndex = users.findIndex(u => u.id === parseInt(userId));
+
+    if (userIndex !== -1) {
+        // Remove the user from the array of users
+        users.splice(userIndex, 1);
+
+        res.send(`User ${userId} deleted successfully!`);
+    } else {
+        res.status(404).send('User not found');
+    }
 });
